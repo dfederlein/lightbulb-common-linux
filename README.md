@@ -1,38 +1,54 @@
-Role Name
+lightbulb-common-linux
 =========
 
-A brief description of the role goes here.
+Configures and secures a Red Hat Enterprise Linux 7 or CentOS 7 base node for use in an Ansible Lightbulb lab environment.
+
+This role will:
+
+* Ensure firewalld and libselinux-python is present (RHEL7 only)
+* Ensure firewalld is started (RHEL7 only)
+* Enables specific firewalls services (RHEL7 only)
+* Configures sshd and sudoers
+* Creates a group and user for the assigned student owner
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+This role has no special requirements.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+* *username*: This *required* variable contains a string with the student username that will be using the node in their lab. This variable is typically elsewhere using `set_fact` while provisioning or as a host variable in more static environments.
+
+* *ssh_port*: This variable is an integer that defines the port the sshd service will be bound. It defaults to 22. Typically you will not want to change this. If you run on a port other than the default, remember you may also need to open that port in your firewalld service (RHEL7 only) and any VPC settings for SSH access to be possible.
+
+* *admin_password*: This variable is a string defines the password for the `username` account on the node. It is recommended, but not required, you set this with a sufficiently unique password that all nodes in the lab can share. If unset one will be assigned like "CowSay1018."
+
+* *firewalld_rules*: This variable contains a list of dictionaries that define the rules the firewalld service will be configured.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None.
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+  ---
+  - hosts: nodes
+    vars:
+      username: lightbulb
+      admin_password: ChAnGEthIs
+    roles:
+      - lightbulb-common-linux
 
 License
 -------
 
-BSD
+MIT
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+This role has been developed as part of the [Ansible Lightbulb project](https://github.com/ansible/lightbulb).

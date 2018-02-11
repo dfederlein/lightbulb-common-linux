@@ -1,2 +1,14 @@
----
-# defaults file for lightbulb-common-linux
+ssh_port: 22
+admin_password: CowSay{{ lookup('pipe', 'date +%m%y')}}
+firewalld_rules:
+  - service: http
+  - service: https
+  - service: ssh
+  - port: 5432
+    protocol: udp
+  - port: 5672
+    protocol: udp
+  - port: 5432
+    protocol: tcp
+  - port: 5672
+    protocol: tcp

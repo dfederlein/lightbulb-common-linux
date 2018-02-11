@@ -1,2 +1,53 @@
----
-# tasks file for lightbulb-common-linux
+- name: RHEL specific common tasks
+  block:
+
+  - name: Ensures firewalld and libselinux-python are present
+    yum:
+      name:
+        - libselinux-python
+        - firewalld
+      state: present
+
+  - name: Ensures firewalld is started
+    service:
+      name: firewalld
+      state: started
+
+  - name: Enables specific firewall services
+    firewalld:
+      immediate: yes
+      permanent: yes
+      port: "{{ item.port ~ '/' ~ item.protocol if (item.port is defined and item.protocol is defined) else omit }}"
+      service: "{{ item.service | default(omit) }}"
+      state: enabled
+    with_items: "{{ firewall_rules }}"
+    notify: restart firewalld
+
+  when: ansible_os_family == 'RedHat'
+
+- name: Configures sshd and sudoers
+  lineinfile:
+    dest: "{{ item.dest }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: "{{ item.state | default('present') }}"
+    validate: "{{ item.validate | default(omit) }}"
+    backup: no
+  with_items: "{{ common_node_config_options }}"
+  notify: restart-ssh
+
+- meta: flush_handlers
+
+- name: Creates user group
+  group:
+    name: "{{ username }}"
+    state: present
+
+- name: Creates user account
+  user:
+    createhome: yes
+    group: "{{ username }}"
+    name: "{{ username }}"
+    shell: /bin/bash
+    state: present
+    password: "{{ admin_password_hash }}"

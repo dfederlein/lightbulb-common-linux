@@ -1,2 +1,30 @@
 ---
 # vars file for lightbulb-common-linux
+admin_password_hash: "{{ admin_password | password_hash(salt='sRvXWmR5BBwqRlih') }}"
+
+common_node_config_options:
+  - dest: /etc/ssh/sshd_config
+    regexp: '^#?Port'
+    line: Port {{ ssh_port }}
+    validate: sshd -t -f %s
+
+  - dest: /etc/ssh/sshd_config
+    regexp: '^#?PasswordAuthentication'
+    line: 'PasswordAuthentication yes'
+    validate: sshd -t -f %s
+
+  - dest: /etc/ssh/sshd_config
+    regexp: '^#?UseDNS'
+    line: 'UseDNS no'
+    validate: sshd -t -f %s
+
+  - dest: /etc/sudoers
+    regexp: '^{{ username }}'
+    line: '{{ username }} ALL=(ALL) NOPASSWD: ALL'
+    validate: visudo -cf %s
+
+  - dest: /etc/sudoers
+    regexp: '^Defaults.*requiretty'
+    line: 'Defaults    !requiretty'
+    validate: visudo -cf %s
+
