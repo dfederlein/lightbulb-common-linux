@@ -35,13 +35,15 @@ None.
 Example Playbook
 ----------------
 
-  ---
-  - hosts: nodes
-    vars:
-      username: lightbulb
-      admin_password: ChAnGEthIs
-    roles:
-      - lightbulb-common-linux
+```yaml
+---
+- hosts: nodes
+  vars:
+    username: lightbulb
+    admin_password: ChAnGEthIs
+  roles:
+    - lightbulb-common-linux
+```
 
 License
 -------
