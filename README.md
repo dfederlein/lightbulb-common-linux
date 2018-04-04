@@ -23,9 +23,9 @@ Role Variables
 
 * *ssh_port*: This variable is an integer that defines the port the sshd service will be bound. It defaults to 22. Typically you will not want to change this. If you run on a port other than the default, remember you may also need to open that port in your firewalld service (RHEL7 only) and any VPC settings for SSH access to be possible.
 
-* *admin_password*: This variable is a string defines the password for the `username` account on the node. It is recommended, but not required, you set this with a sufficiently unique password that all nodes in the lab can share. If unset one will be assigned like "CowSay1018."
+* *admin_password*: This variable is a string defines the password for the `username` account on the node. It is recommended, but not required, you set this with a sufficiently unique password that all nodes in the lab can share. If unset one will be assigned password made up of "CowSay" and the month and year i.e. "CowSay1018".
 
-* *firewalld_rules*: This variable contains a list of dictionaries that define the rules the firewalld service will be configured.
+* *firewalld_rules*: This variable contains a list of dictionaries that define the rules the firewalld service will be configured. Each dictionary in the list can contain a "service" name such as "http" or a "port" number and "protocol". See `defaults/main.yml` for an example definition.
 
 Dependencies
 ------------
